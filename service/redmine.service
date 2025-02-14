@@ -1,0 +1,16 @@
+[Unit]
+Description=Servicio de redmine
+Wants= nginx.service
+
+[Service]
+User=vagrant
+Group=vagrant
+WorkingDirectory=/vagrant/redmine-5.0.11
+Environment="RAILS_ENV=production"
+Environment="PATH=/home/vagrant/.asdf/shims:/home/vagrant/.asdf/installs/ruby/3.2.1/bin:/usr/local/bin:/usr/bin:/bin"
+ExecStart=/home/vagrant/.asdf/installs/ruby/3.2.1/bin/bundle exec rails server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+

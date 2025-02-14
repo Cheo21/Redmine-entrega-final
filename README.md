@@ -69,8 +69,14 @@ RAILS_ENV=production bundle exec rails server
 ```sh
 sudo cp /vagrant/nginx/redmine-demo.conf /etc/nginx/sites-available/
 sudo ln -s /etc/nginx/sites-available/redmine-demo.conf /etc/nginx/sites-enabled/
+## De momento para probar deshabilitaremos la configuracion por default
+sudo rm /etc/nginx/sites-enabled/default
+
+## Refrescamos el servicio de nginx para que tome las nuevas configuraciones.
 sudo systemctl reload nginx.service
 ```
+Ya con esto lo podriamos probar buscando en el navegador: **nuestra-ip:80** 
+
 
 
 

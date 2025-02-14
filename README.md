@@ -67,8 +67,8 @@ RAILS_ENV=production bundle exec rails server
 ---
 ### Añadir la configuracion de nginx que se encuentra en el repo
 ```sh
-cp /vagrant/nginx/redmine-demo.con /etc/nginx/sites-available/
-ln -s /etc/nginx/sites-available/redmine-demo.con /etc/nginx/sites-enabled/
+sudo cp /vagrant/nginx/redmine-demo.conf /etc/nginx/sites-available/
+sudo ln -s /etc/nginx/sites-available/redmine-demo.conf /etc/nginx/sites-enabled/
 sudo systemctl reload nginx.service
 ```
 

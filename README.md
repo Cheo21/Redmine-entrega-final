@@ -68,6 +68,7 @@ RAILS_ENV=production bundle exec rails server
 ```sh
 cp /vagrant/nginx/redmine-demo.con /etc/nginx/sites-available/
 ln -s /etc/nginx/sites-available/redmine-demo.con /etc/nginx/sites-enabled/
+sudo systemctl reload nginx.service
 ```
 
 

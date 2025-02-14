@@ -81,7 +81,7 @@ Ya con esto lo podriamos probar buscando en el navegador: **nuestra-ip:80**
 ## Para mantenerlo como un servicio copiamos la configuracion dada en la carpeta /vagrant/service
 
 ```sh
-cp /vagrant/service/redmine.service /etc/syste /etc/systemd/system/
+sudo cp /vagrant/service/redmine.service /etc/systemd/system/
 ##Aplicamos la configuracion
 sudo systemctl daemon-reload
 sudo systemctl start redmine

@@ -1,19 +1,13 @@
-# Redmine: entrega final
+# Redmine: Entrega Final
 
-Tener en cuenta para configurar:
-* Configurar base de datos.
-* Servidor
-  * App server
-    * levantar el servidor puma. 
-  * Web Server
-    * Configurar el nginx para servir staticos y pasar el resto de peticiones a Puma.
-* Levantarlo como servicio
+Este documento describe los pasos necesarios para configurar y levantar Redmine en un servidor, así como para mantenerlo funcionando como un servicio.
 
----
 
-### Configurar Database
+## Pasos de Configuración
 
-Crear una base de datos y un usuario con password para Redmine. Ejemplo: 
+### 1. Configuración de la Base de Datos
+
+Primero, debes crear una base de datos y un usuario con permisos adecuados. Para hacerlo, ejecuta los siguientes comandos en MySQL:
 
 ```sh
 sudo mysql
@@ -22,35 +16,44 @@ CREATE USER 'redmine'@'localhost' IDENTIFIED BY 'secretPassword';
 GRANT ALL PRIVILEGES ON redmine.* TO 'redmine'@'localhost';
 FLUSH PRIVILEGES;
 ```
-### Adaptar database.yml para conectarse correctamente a la db
 
-Desde el root del proyecto:
+### 2. Configuración del Archivo `database.yml`
+
+Luego, necesitas adaptar el archivo `database.yml` para conectarte correctamente a la base de datos de Redmine.
+
+Desde el directorio raíz del proyecto, ejecuta:
+
 ```sh
 cp /vagrant/redmine-5.0.11/config/database.yml.example /vagrant/redmine-5.0.11/config/database.yml
 vi /vagrant/redmine-5.0.11/config/database.yml
 ```
-En la seccion de production verificar que coincida con el usuario, password y base de datos
-Ejemplo:
-```sh
+
+En la sección `production`, asegúrate de que los valores de `username`, `password` y `database` coincidan con los datos de la base de datos que acabas de crear. Ejemplo:
+
+```yaml
 production:
   adapter: mysql2
   database: redmine
   host: localhost
   username: redmine
-  password: "secretPassword" 
-  # Use "utf8" instead of "utfmb4" for MySQL prior to 5.7.7
+  password: "secretPassword"
   encoding: utf8mb4
-  ```
+```
 
+### 3. Instalación de las Dependencias de Ruby
 
-### Instalar las dependencias ruby
+Redmine utiliza varias gemas de Ruby, por lo que necesitas instalar Bundler y las gemas necesarias:
+
 ```sh
 cd /vagrant/redmine-5.0.11
 gem install bundler
 bundle install
 ```
 
-### Instalar las dependencias ruby
+### 4. Configuración Inicial de la Base de Datos
+
+Ejecuta los comandos para generar un token secreto y realizar las migraciones de la base de datos. También carga los datos por defecto en español:
+
 ```sh
 cd /vagrant/redmine-5.0.11
 
@@ -59,33 +62,74 @@ RAILS_ENV=production bundle exec rake db:migrate
 RAILS_ENV=production REDMINE_LANG=es bundle exec rake redmine:load_default_data
 ```
 
-### Levantar el app server:
-Ya con eso podriamos levantar al app server que quedara escuchando en el puerto 3000
+### 5. Levantar el Servidor de Aplicaciones
+
+Con las dependencias instaladas y la base de datos configurada, puedes levantar el servidor Puma, que escuchará en el puerto 3000:
+
 ```sh
 RAILS_ENV=production bundle exec rails server
 ```
+
 ---
-### Añadir la configuracion de nginx que se encuentra en el repo
-```sh
-sudo cp /vagrant/nginx/redmine-demo.conf /etc/nginx/sites-available/
-sudo ln -s /etc/nginx/sites-available/redmine-demo.conf /etc/nginx/sites-enabled/
-## De momento para probar deshabilitaremos la configuracion por default
-sudo rm /etc/nginx/sites-enabled/default
 
-## Refrescamos el servicio de nginx para que tome las nuevas configuraciones.
-sudo systemctl reload nginx.service
-```
-Ya con esto lo podriamos probar buscando en el navegador: **nuestra-ip:80** 
+## Configuración de Nginx
 
+Redmine debe estar configurado detrás de Nginx para manejar las peticiones web. Sigue estos pasos para hacerlo:
 
-## Para mantenerlo como un servicio copiamos la configuracion dada en la carpeta /vagrant/service
+1. Copia la configuración de Nginx proporcionada en el repositorio:
 
-```sh
-sudo cp /vagrant/service/redmine.service /etc/systemd/system/
-##Aplicamos la configuracion
-sudo systemctl daemon-reload
-sudo systemctl start redmine
-sudo systemctl enable redmine.service
+   ```sh
+   sudo cp /vagrant/nginx/redmine-demo.conf /etc/nginx/sites-available/
+   sudo ln -s /etc/nginx/sites-available/redmine-demo.conf /etc/nginx/sites-enabled/
+   ```
 
-```
-Nota: Se intento colocando el path completo donde se encuentra el comando bundle, sin embargo daba error. Se probo usando ***which bundle*** y se encontro otro lugar donde se ejecuta. Por ende se creo una variable de entorno PATH añadiendo varias opciones a donde buscar.
+2. Deshabilita la configuración predeterminada de Nginx para evitar conflictos:
+
+   ```sh
+   sudo rm /etc/nginx/sites-enabled/default
+   ```
+
+3. Recarga el servicio de Nginx para aplicar los cambios:
+
+   ```sh
+   sudo systemctl reload nginx.service
+   ```
+
+Ahora, puedes acceder a Redmine desde tu navegador usando la dirección **`nuestra-ip:80`**.
+
+---
+
+## Configuración como Servicio
+
+Para ejecutar Redmine como un servicio y mantenerlo corriendo en segundo plano, sigue estos pasos:
+
+1. Copia el archivo de configuración del servicio:
+
+   ```sh
+   sudo cp /vagrant/service/redmine.service /etc/systemd/system/
+   ```
+
+2. Recarga el daemon de systemd para aplicar la nueva configuración:
+
+   ```sh
+   sudo systemctl daemon-reload
+   ```
+
+3. Inicia y habilita el servicio de Redmine para que se ejecute automáticamente al iniciar el sistema:
+
+   ```sh
+   sudo systemctl start redmine
+   sudo systemctl enable redmine.service
+   ```
+
+### Nota sobre la Configuración de `bundle`
+
+Durante las pruebas, se encontró que usar el **path completo** para `bundle` causaba un error. Se resolvió este problema usando el comando `which bundle`, lo que permitió encontrar la ubicación correcta de `bundle`. Como resultado, se añadió una variable de entorno `PATH` personalizada para asegurar que el servicio use la ubicación adecuada de `bundle`.
+
+---
+
+## Conclusión
+
+Con estos pasos, deberías tener Redmine corriendo en tu servidor, accesible a través de Nginx y ejecutándose como un servicio. Si encuentras algún problema durante la configuración, revisa los logs de `systemd` para más detalles.
+
+---

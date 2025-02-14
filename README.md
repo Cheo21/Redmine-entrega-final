@@ -78,6 +78,14 @@ sudo systemctl reload nginx.service
 Ya con esto lo podriamos probar buscando en el navegador: **nuestra-ip:80** 
 
 
+## Para mantenerlo como un servicio copiamos la configuracion dada en la carpeta /vagrant/service
 
+```sh
+cp /vagrant/service/redmine.service /etc/syste /etc/systemd/system/
+##Aplicamos la configuracion
+sudo systemctl daemon-reload
+sudo systemctl start redmine
+sudo systemctl enable redmine.service
 
-
+```
+Nota: Se intento colocando el path completo donde se encuentra el comando bundle, sin embargo daba error. Se probo usando ***which bundle*** y se encontro otro lugar donde se ejecuta. Por ende se creo una variable de entorno PATH añadiendo varias opciones a donde buscar.

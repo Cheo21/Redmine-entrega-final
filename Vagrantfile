@@ -11,10 +11,7 @@ Vagrant.configure("2") do |config|
     libonig-dev tk-dev libgdbm-dev libyaml-dev libffi-dev \
     libssl-dev libreadline6-dev zlib1g-dev rustc
      
-    cd /vagrant
-    wget https://www.redmine.org/releases/redmine-5.0.11.tar.gz
-    tar -xvzf redmine-5.0.11.tar.gz  
-    rm -fr redmine-5.0.11.tar.gz
+  
     su - vagrant -c "git config --global advice.detachedHead false"
     su - vagrant -c "[ -d ~/.asdf ] || git clone https://github.com/asdf-vm/asdf.git ~/.asdf --branch v0.15.0"
         su - vagrant -c "grep -q asdf.sh ~/.bashrc || echo -e '. \"\\$HOME/.asdf/asdf.sh\"\n. \"\\$HOME/.asdf/completions/asdf.bash\"' >> .bashrc"

@@ -7,6 +7,9 @@ Tener en cuenta para configurar:
     * levantar el servidor puma. 
   * Web Server
     * Configurar el nginx para servir staticos y pasar el resto de peticiones a Puma.
+* Levantarlo como servicio
+
+---
 
 ### Configurar Database
 
@@ -52,8 +55,21 @@ cd /vagrant/redmine-5.0.11
 
 bundle exec rake generate_secret_token
 RAILS_ENV=production bundle exec rake db:migrate
-RAILS_ENV=production bundle exec rake redmine:load_default_data
+RAILS_ENV=production REDMINE_LANG=es bundle exec rake redmine:load_default_data
 ```
+
+### Levantar el app server:
+Ya con eso podriamos levantar al app server que quedara escuchando en el puerto 3000
+```sh
+RAILS_ENV=production bundle exec rails server
+```
+---
+### Añadir la configuracion de nginx que se encuentra en el repo
+```sh
+cp /vagrant/nginx/redmine-demo.con /etc/nginx/sites-available/
+ln -s /etc/nginx/sites-available/redmine-demo.con /etc/nginx/sites-enabled/
+```
+
 
 
 

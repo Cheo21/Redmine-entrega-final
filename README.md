@@ -26,6 +26,7 @@ FLUSH PRIVILEGES;
 
 Desde el root del proyecto:
 ```sh
+cp /vagrant/redmine-5.0.11/config/database.yml.example /vagrant/redmine-5.0.11/config/database.yml
 vi /vagrant/redmine-5.0.11/config/database.yml
 ```
 En la seccion de production verificar que coincida con el usuario, password y base de datos

@@ -17,21 +17,16 @@ GRANT ALL PRIVILEGES ON redmine.* TO 'redmine'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-### 2. Movemos el proyecto al /opt
-```sh
-cd /vagrant
-sudo cp -r /vagrant/redmine-5.0.11 /opt
-```
 
-### 3. Configuración del Archivo `database.yml`
+### 2. Configuración del Archivo `database.yml`
 
 Luego, necesitas adaptar el archivo `database.yml` para conectarte correctamente a la base de datos de Redmine.
 
 Desde el directorio raíz del proyecto, ejecuta:
 
 ```sh
-cp /vagrant/redmine-5.0.11/config/database.yml.example /vagrant/redmine-5.0.11/config/database.yml
-vi /vagrant/redmine-5.0.11/config/database.yml
+cp /opt/redmine-5.0.11/config/database.yml.example /vagrant/redmine-5.0.11/config/database.yml
+vi /opt/redmine-5.0.11/config/database.yml
 ```
 
 En la sección `production`, asegúrate de que los valores de `username`, `password` y `database` coincidan con los datos de la base de datos que acabas de crear. Ejemplo:
@@ -51,7 +46,7 @@ production:
 Redmine utiliza varias gemas de Ruby, por lo que necesitas instalar Bundler y las gemas necesarias:
 
 ```sh
-cd /vagrant/redmine-5.0.11
+cd /opt/redmine-5.0.11
 gem install bundler
 bundle install
 ```
@@ -61,7 +56,7 @@ bundle install
 Ejecuta los comandos para generar un token secreto y realizar las migraciones de la base de datos. También carga los datos por defecto en español:
 
 ```sh
-cd /vagrant/redmine-5.0.11
+cd /opt/redmine-5.0.11
 
 bundle exec rake generate_secret_token
 RAILS_ENV=production bundle exec rake db:migrate

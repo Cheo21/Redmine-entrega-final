@@ -25,7 +25,7 @@ Luego, necesitas adaptar el archivo `database.yml` para conectarte correctamente
 Desde el directorio raíz del proyecto, ejecuta:
 
 ```sh
-cp /opt/redmine-5.0.11/config/database.yml.example /vagrant/redmine-5.0.11/config/database.yml
+cp /opt/redmine-5.0.11/config/database.yml.example /opt/redmine-5.0.11/config/database.yml
 vi /opt/redmine-5.0.11/config/database.yml
 ```
 

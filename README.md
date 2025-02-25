@@ -17,7 +17,13 @@ GRANT ALL PRIVILEGES ON redmine.* TO 'redmine'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
-### 2. Configuración del Archivo `database.yml`
+### 2. Movemos el proyecto al /opt
+```sh
+cd /vagrant
+sudo cp -r /vagrant/redmine-5.0.11 /opt
+```
+
+### 3. Configuración del Archivo `database.yml`
 
 Luego, necesitas adaptar el archivo `database.yml` para conectarte correctamente a la base de datos de Redmine.
 
